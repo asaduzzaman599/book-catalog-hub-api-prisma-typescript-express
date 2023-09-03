@@ -25,6 +25,9 @@ reviewAndRatings ReviewAndRating[]
 
 orders Order[]
 
+createdAt DateTime @default(now())
+updateAt DateTime @updatedAt
+
 @@map("users")
 }
 
@@ -38,6 +41,10 @@ model Category{
   title String
 
   books Book[]
+
+  
+createdAt DateTime @default(now())
+updateAt DateTime @updatedAt
 
   @@map("categories")
 } 
@@ -55,6 +62,10 @@ model Book {
 
   reviewAndRatings ReviewAndRating[]
 
+  
+createdAt DateTime @default(now())
+updateAt DateTime @updatedAt
+
   @@map("books")
 }
 
@@ -70,6 +81,10 @@ user User @relation(fields: [userId], references: [id])
 
 bookId String
 book Book @relation(fields: [bookId], references: [id])
+
+
+createdAt DateTime @default(now())
+updateAt DateTime @updatedAt
 
 @@map("reviewAndRatings")
 }
