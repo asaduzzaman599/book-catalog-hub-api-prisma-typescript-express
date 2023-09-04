@@ -66,12 +66,10 @@ const findOneUser = async (id: string): Promise<User | null> => {
 }
 
 const findUsers = async (): Promise<User[]> => {
-  const user = await prismaClient.user.findMany({
-
+  const users = await prismaClient.user.findMany({
   })
 
-
-  return user
+  return users
 }
 
 

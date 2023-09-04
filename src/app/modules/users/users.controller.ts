@@ -1,35 +1,43 @@
-import catchAsync from "../../../shared/catchAsync"
-import { UserService } from "./users.service"
+import catchAsync from "../../../shared/catchAsync";
+import responseData from "../../../shared/response";
+import { UserService } from "./users.service";
 
-const insertUser = catchAsync((req, res)=> {
-  const user = req.body
+const insertUser = catchAsync((req, res) => {
+  const user = req.body;
 
-  const result = UserService.insertUser(user)
-})
+  const result = UserService.insertUser(user);
+  
+  return responseData({ message: "User inserted  successfully", result }, res);
+});
 
-const updateUser = catchAsync((req, res)=> {
-  const id = req.params.id
-  const data = req.body
+const updateUser = catchAsync((req, res) => {
+  const id = req.params.id;
+  const data = req.body;
 
-  const result = UserService.updateUser(id, data)
-})
+  const result = UserService.updateUser(id, data);
 
-const deleteUser = catchAsync((req, res)=> {
-  const id = req.params.id
+  return responseData({ message: "User updated  successfully", result }, res);
+});
 
-  const result = UserService.deleteUser(id)
-})
+const deleteUser = catchAsync((req, res) => {
+  const id = req.params.id;
 
-const findOneUser = catchAsync((req, res)=> {
-  const id = req.params.id
+  const result = UserService.deleteUser(id);
 
-  const result = UserService.findOneUser(id)
-})
+  return responseData({ message: "User deleted  successfully", result }, res);
+});
 
-const findUsers = catchAsync((req, res)=> {
+const findOneUser = catchAsync((req, res) => {
+  const id = req.params.id;
 
-  const result = UserService.findUsers()
-})
+  const result = UserService.findOneUser(id);
+  return responseData({ message: "User fetched successfully", result }, res);
+});
+
+const findUsers = catchAsync((req, res) => {
+  const result = UserService.findUsers();
+  return responseData({ message: "Users retrieved successfully", result }, res);
+});
 
 export const UserController = {
   insertUser,
@@ -37,5 +45,4 @@ export const UserController = {
   deleteUser,
   findOneUser,
   findUsers,
-
-}
+};
