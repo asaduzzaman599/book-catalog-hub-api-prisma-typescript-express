@@ -6,7 +6,7 @@ type IData<T> = {
   message?: string;
   status?:  boolean
   statusCode?: number
-
+  token?: string
 }
 
  const responseData = <T>(data: IData<T>,res:Response) =>{
@@ -17,7 +17,8 @@ type IData<T> = {
     success: status,
     statusCode,
     data: data.result,
-    ...(data.message ? { message : data.message} : {} )
+    ...(data.message ? { message : data.message} : {} ),
+    ...(data.token ? { token : data.token} : {} )
   }
 
   return res.status(statusCode).json(response)
