@@ -2,7 +2,7 @@ import { Response } from "express"
 import httpstatus from "http-status"
 
 type IData<T> = {
-  result:T;
+  result?:T;
   message?: string;
   status?:  boolean
   statusCode?: number
