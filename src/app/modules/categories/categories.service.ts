@@ -1,14 +1,20 @@
 import httpStatus from "http-status"
 import prismaClient from "../../../shared/prisma-client"
-import {Category, User} from "@prisma/client";
+import {Category} from "@prisma/client";
 
 const insertCategory = async (payload: Category): Promise<Category> => {
-  const createdUser = await prismaClient.category.create({
+  const categoryExist = await prismaClient.category.findFirst({
+    where: {
+      title: payload.title
+    }
+  })
+  if(categoryExist) console.log(httpStatus.CONFLICT,'Category already exist!')
+  const createdCategory = await prismaClient.category.create({
     data: payload
   })
 
 
-  return createdUser
+  return createdCategory
 }
 
 const updateCategory = async (id:string, payload: Category): Promise<Category | null> => {
@@ -20,7 +26,7 @@ const updateCategory = async (id:string, payload: Category): Promise<Category | 
   })
 
   if(!categoryExist)
-  console.log(httpStatus.NOT_FOUND, 'User not exists')
+  console.log(httpStatus.NOT_FOUND, 'Category not exists')
 
   const category = await prismaClient.category.update({
     where: {
@@ -41,9 +47,9 @@ const deleteCategory = async (id:string): Promise<Category | null> => {
   })
 
   if(!categoryExist)
-  console.log(httpStatus.NOT_FOUND, 'User not exists')
+  console.log(httpStatus.NOT_FOUND, 'Category not exists')
 
-  const category = await prismaClient.user.delete({
+  const category = await prismaClient.category.delete({
     where: {
       id
     }
@@ -52,24 +58,24 @@ const deleteCategory = async (id:string): Promise<Category | null> => {
   return categoryExist
 }
 
-const findOneCategory = async (id: string): Promise<User | null> => {
-  const userExist = await prismaClient.user.findUnique({
+const findOneCategory = async (id: string): Promise<Category | null> => {
+  const categoryExist = await prismaClient.category.findUnique({
     where: {
       id
     }
   })
 
-  if(!userExist)
-  console.log(httpStatus.NOT_FOUND, 'User not exists')
+  if(!categoryExist)
+  console.log(httpStatus.NOT_FOUND, 'Category not exists')
 
-  return userExist
+  return categoryExist
 }
 
-const findCategories = async (): Promise<User[]> => {
-  const users = await prismaClient.user.findMany({
+const findCategories = async (): Promise<Category[]> => {
+  const categories = await prismaClient.category.findMany({
   })
 
-  return users
+  return categories
 }
 
 
