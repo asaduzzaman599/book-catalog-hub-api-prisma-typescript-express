@@ -1,7 +1,10 @@
 import { Book, Prisma } from "@prisma/client";
 import httpStatus from "http-status";
+import paginationHelpers, {
+  IPaginationOption,
+} from "../../../helpers/pagination-helpers";
 import prismaClient from "../../../shared/prisma-client";
-import { IFilterOption, IPaginationOption } from "./books.interface";
+import { IFilterOption } from "./books.interface";
 
 const insertBook = async (payload: Book): Promise<Book> => {
   const createdBook = await prismaClient.book.create({
@@ -63,7 +66,9 @@ const findOneBook = async (id: string): Promise<Book | null> => {
 const findBooks = async (
   filterOptions: IFilterOption,
   paginationOptions: IPaginationOption
-): Promise<Book[]> => {
+)=> {
+  const { limit, page, skip } = paginationHelpers(paginationOptions);
+
   const andCondition = [];
 
   if (Object.keys(filterOptions).length) {
@@ -104,24 +109,33 @@ const findBooks = async (
       })),
     });
 
-    if (Object.keys(options).length > 0) {
-      andCondition.push({
-          AND: Object.entries(options).map(([key,value]) => ({
-              [key]: {
-                equals: value
-              }
-          }))
-      });
+  if (Object.keys(options).length > 0) {
+    andCondition.push({
+      AND: Object.entries(options).map(([key, value]) => ({
+        [key]: {
+          equals: value,
+        },
+      })),
+    });
   }
 
-  const whereCondition:  Prisma.BookWhereInput =   andCondition.length > 0 ? { AND: andCondition } : {};
+  const whereCondition: Prisma.BookWhereInput =
+    andCondition.length > 0 ? { AND: andCondition } : {};
 
-  const books = await prismaClient.book.findMany({where: whereCondition,
-  });
+  const conditions = { where: whereCondition, skip, take: limit };
+  const books = await prismaClient.book.findMany(conditions);
 
+  const count = await prismaClient.book.count(conditions);
 
-
-  return books;
+  return {
+    meta: {
+      page,
+      size: limit,
+      total: count,
+      totalPage: !isNaN(count / limit) ? Math.ceil(count / limit): 0,
+    },
+    data: books,
+  };
 };
 
 const findBookByCategory = async (id: string): Promise<Book[]> => {

@@ -1,7 +1,7 @@
-import catchAsync from "../../../shared/catchAsync";
+import catchAsync from "../../../shared/catchAsync"
 import pick from "../../../shared/pick"
-import responseData from "../../../shared/response";
-import { BookService } from "./books.service";
+import responseData from "../../../shared/response"
+import { BookService } from "./books.service"
 
 const insertBook = catchAsync((req, res) => {
   const book = req.body;
@@ -39,8 +39,8 @@ const findBooks = catchAsync((req, res) => {
   const query = req.query
   const paginationOptions = pick(query,['page', 'size','sortBy','sortOrder'])
   const filterOptions = pick(query,['search', 'minPrice','maxPrice','category'])
-  const result = BookService.findBooks(filterOptions,paginationOptions);
-  return responseData({ message: "Books retrieved successfully", result }, res);
+  const result = await BookService.findBooks(filterOptions,paginationOptions);
+  return responseData({ message: "Books retrieved successfully", { result: result.data, meta: result.meta}}, res);
 });
 
 const findBookByCategory = catchAsync((req, res) => {
