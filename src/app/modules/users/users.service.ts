@@ -65,11 +65,15 @@ const findOneUser = async (id: string): Promise<User | null> => {
   return userExist
 }
 
-const findUsers = async (): Promise<User[]> => {
+const findUsers = async (): Promise<Partial<User>[]> => {
   const users = await prismaClient.user.findMany({
+    
   })
-
-  return users
+  console.log(users)
+  return users?.map(i=>{
+    const {password, ...user} = i
+    return user
+  })
 }
 
 

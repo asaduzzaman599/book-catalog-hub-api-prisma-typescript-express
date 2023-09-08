@@ -6,11 +6,11 @@ import { Role } from '@prisma/client'
 const router = express.Router()
 
 router.route('/')
-.get(auth(Role.ADMIN), UserController.findUsers)
+.get(auth(Role.admin), UserController.findUsers)
 
 router.route('/:id')
-.get(auth(Role.ADMIN), UserController.findOneUser)
-.patch(auth(Role.ADMIN), UserController.updateUser)
-.delete(auth(Role.ADMIN), UserController.deleteUser)
+.get(auth(Role.admin), UserController.findOneUser)
+.patch(auth(Role.admin), UserController.updateUser)
+.delete(auth(Role.admin), UserController.deleteUser)
 
 export const UserRouter = router

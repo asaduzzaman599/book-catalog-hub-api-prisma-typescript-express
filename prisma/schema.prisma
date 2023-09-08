@@ -16,7 +16,7 @@ model User {
 name String
 email String @unique
 password String
-role Role @default(CUSTOMER)
+role Role @default(customer)
 contactNo String
 address String
 profileImg String?
@@ -32,8 +32,8 @@ updateAt DateTime @updatedAt
 }
 
 enum Role {
-  ADMIN
-  CUSTOMER
+  admin
+  customer
 }
 
 model Category{

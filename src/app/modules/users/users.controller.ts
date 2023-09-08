@@ -27,15 +27,15 @@ const deleteUser = catchAsync((req, res) => {
   return responseData({ message: "User deleted  successfully", result }, res);
 });
 
-const findOneUser = catchAsync((req, res) => {
+const findOneUser = catchAsync(async (req, res) => {
   const id = req.params.id;
 
   const result = UserService.findOneUser(id);
   return responseData({ message: "User fetched successfully", result }, res);
 });
 
-const findUsers = catchAsync((req, res) => {
-  const result = UserService.findUsers();
+const findUsers = catchAsync(async (req, res) => {
+  const result = await UserService.findUsers();
   return responseData({ message: "Users retrieved successfully", result }, res);
 });
 

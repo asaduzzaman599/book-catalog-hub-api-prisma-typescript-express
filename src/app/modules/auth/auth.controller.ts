@@ -8,9 +8,9 @@ const signup = catchAsync(async (req, res)=>{
   const result = await AuthService.signUp(user)
 
   return responseData({
-    data: result,
+    result,
     message: 'User created successfully!'
-  }, req)
+  }, res)
 
 })
 

@@ -31,16 +31,14 @@ const signUp = async (payload: User) => {
 
   if(!createdUser) console.log(httpStatus.EXPECTATION_FAILED, 'User created failed')
 
-  const user = await prismaClient.user.findUnique({
+  const user = await prismaClient.user.findFirst({
     where:{
       id: createdUser.id
-    },
-    select: { 
-      password: false
     }
   })
+  const { password: pass, ...userData } = user
 
-  return user
+  return userData
 }
 
 

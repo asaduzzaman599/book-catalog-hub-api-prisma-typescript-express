@@ -3,6 +3,7 @@ import cors from 'cors'
 import { AppRouter } from './routes'
 import responseData from './shared/response'
 import httpStatus from 'http-status'
+import globalErrorHandler from './app/middlewares/global-error'
 
 
 const app = express()
@@ -15,6 +16,8 @@ app.use(express.urlencoded({extended: true}))
 app.use('/api/v1', AppRouter)
 
 
+//global error handler
+app.use(globalErrorHandler);
 
 //route not found
 app.use((req: Request, res: Response, next: NextFunction) => {

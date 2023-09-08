@@ -35,12 +35,12 @@ const findOneBook = catchAsync((req, res) => {
   return responseData({ message: "Book fetched successfully", result }, res);
 });
 
-const findBooks = catchAsync((req, res) => {
+const findBooks = catchAsync(async (req, res) => {
   const query = req.query
   const paginationOptions = pick(query,['page', 'size','sortBy','sortOrder'])
   const filterOptions = pick(query,['search', 'minPrice','maxPrice','category'])
   const result = await BookService.findBooks(filterOptions,paginationOptions);
-  return responseData({ message: "Books retrieved successfully", { result: result.data, meta: result.meta}}, res);
+  return responseData({ message: "Books retrieved successfully",result:  { result: result.data, meta: result.meta}}, res);
 });
 
 const findBookByCategory = catchAsync((req, res) => {
