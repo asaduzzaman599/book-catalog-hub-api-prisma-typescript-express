@@ -10,11 +10,11 @@ const insertUser = catchAsync((req, res) => {
   return responseData({ message: "User inserted  successfully", result }, res);
 });
 
-const updateUser = catchAsync((req, res) => {
+const updateUser = catchAsync(async (req, res) => {
   const id = req.params.id;
   const data = req.body;
 
-  const result = UserService.updateUser(id, data);
+  const result = await UserService.updateUser(id, data);
 
   return responseData({ message: "User updated  successfully", result }, res);
 });
@@ -30,7 +30,7 @@ const deleteUser = catchAsync((req, res) => {
 const findOneUser = catchAsync(async (req, res) => {
   const id = req.params.id;
 
-  const result = UserService.findOneUser(id);
+  const result = await  UserService.findOneUser(id);
   return responseData({ message: "User fetched successfully", result }, res);
 });
 
