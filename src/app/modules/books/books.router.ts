@@ -5,13 +5,14 @@ import auth from '../../middlewares/auth'
 
 const router = express.Router()
 
+router.route('/create-book').post(auth(Role.admin), BookController.insertBook)
 router.route('/')
-.get(BookController.findBooks).post(auth(Role.ADMIN), BookController.insertBook)
+.get(BookController.findBooks)
 
 router.route('/:categoryId/category').get(BookController.findBookByCategory)
 router.route('/:id')
 .get(BookController.findOneBook)
-.patch(auth(Role.ADMIN), BookController.updateBook)
-.delete(auth(Role.ADMIN), BookController.deleteBook)
+.patch(auth(Role.admin), BookController.updateBook)
+.delete(auth(Role.admin), BookController.deleteBook)
 
 export const BookRouter = router

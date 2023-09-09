@@ -5,6 +5,7 @@ import paginationHelpers, {
 } from "../../../helpers/pagination-helpers";
 import prismaClient from "../../../shared/prisma-client";
 import { IFilterOption } from "./books.interface";
+import ApiError from "../../error/api-error"
 
 const insertBook = async (payload: Book): Promise<Book> => {
   const createdBook = await prismaClient.book.create({
@@ -21,7 +22,7 @@ const updateBook = async (id: string, payload: Book): Promise<Book | null> => {
     },
   });
 
-  if (!bookExist) console.log(httpStatus.NOT_FOUND, "Book not exists");
+  if (!bookExist) throw new ApiError(httpStatus.NOT_FOUND, "Book not exists");
 
   const book = await prismaClient.book.update({
     where: {
@@ -40,7 +41,7 @@ const deleteBook = async (id: string): Promise<Book | null> => {
     },
   });
 
-  if (!bookExist) console.log(httpStatus.NOT_FOUND, "Book not exists");
+  if (!bookExist) throw new ApiError(httpStatus.NOT_FOUND, "Book not exists");
 
   const book = await prismaClient.book.delete({
     where: {
@@ -58,7 +59,7 @@ const findOneBook = async (id: string): Promise<Book | null> => {
     },
   });
 
-  if (!bookExist) console.log(httpStatus.NOT_FOUND, "Book not exists");
+  if (!bookExist) throw new ApiError(httpStatus.NOT_FOUND, "Book not exists");
 
   return bookExist;
 };

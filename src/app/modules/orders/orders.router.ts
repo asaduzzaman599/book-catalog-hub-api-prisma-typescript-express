@@ -6,12 +6,12 @@ import auth from '../../middlewares/auth'
 const router = express.Router()
 
 router.route('/create-order')
-.post(auth(Role.CUSTOMER), OrderController.insertOrder)
+.post(auth(Role.customer), OrderController.insertOrder)
 
 router.route('/')
-.get(auth(Role.ADMIN, Role.CUSTOMER),OrderController.findOrders)
+.get(auth(Role.admin, Role.customer),OrderController.findOrders)
 
 router.route('/:id')
-.get(auth(Role.ADMIN, Role.CUSTOMER),OrderController.findOneOrder)
+.get(auth(Role.admin, Role.customer),OrderController.findOneOrder)
 
 export const OrderRouter = router

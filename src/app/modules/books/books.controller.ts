@@ -3,35 +3,36 @@ import pick from "../../../shared/pick"
 import responseData from "../../../shared/response"
 import { BookService } from "./books.service"
 
-const insertBook = catchAsync((req, res) => {
+const insertBook = catchAsync(async (req, res) => {
+  
   const book = req.body;
 
-  const result = BookService.insertBook(book);
+  const result = await BookService.insertBook(book);
   
   return responseData({ message: "Book inserted  successfully", result }, res);
 });
 
-const updateBook = catchAsync((req, res) => {
+const updateBook = catchAsync(async (req, res) => {
   const id = req.params.id;
   const data = req.body;
 
-  const result = BookService.updateBook(id, data);
+  const result = await BookService.updateBook(id, data);
 
   return responseData({ message: "Book updated  successfully", result }, res);
 });
 
-const deleteBook = catchAsync((req, res) => {
+const deleteBook = catchAsync(async (req, res) => {
   const id = req.params.id;
 
-  const result = BookService.deleteBook(id);
+  const result = await BookService.deleteBook(id);
 
   return responseData({ message: "Book deleted  successfully", result }, res);
 });
 
-const findOneBook = catchAsync((req, res) => {
+const findOneBook = catchAsync(async (req, res) => {
   const id = req.params.id;
 
-  const result = BookService.findOneBook(id);
+  const result = await BookService.findOneBook(id);
   return responseData({ message: "Book fetched successfully", result }, res);
 });
 
@@ -43,9 +44,9 @@ const findBooks = catchAsync(async (req, res) => {
   return responseData({ message: "Books retrieved successfully",result:  { result: result.data, meta: result.meta}}, res);
 });
 
-const findBookByCategory = catchAsync((req, res) => {
+const findBookByCategory = catchAsync(async (req, res) => {
   const categoryId = req.params.categoryId
-  const result = BookService.findBookByCategory(categoryId);
+  const result = await BookService.findBookByCategory(categoryId);
   return responseData({ message: "Books with associated category data fetched successfully", result }, res);
 });
 

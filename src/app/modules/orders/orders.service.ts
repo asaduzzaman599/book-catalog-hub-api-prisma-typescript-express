@@ -2,6 +2,7 @@ import httpStatus from "http-status"
 import prismaClient from "../../../shared/prisma-client"
 import {Order, Role} from "@prisma/client";
 import { IValidateUser } from "../auth/auth.interface"
+import ApiError from "../../error/api-error"
 
 const insertOrder = async (payload: Order): Promise<Order> => {
   const createdOrder = await prismaClient.order.create({
@@ -19,13 +20,13 @@ const findOneOrder = async (id: string, payload: IValidateUser): Promise<Order |
     }
   })
   if(!orderExist)
-   console.log(httpStatus.NOT_FOUND, 'Order does not exist!');
+   throw new ApiError(httpStatus.NOT_FOUND, 'Order does not exist!');
 
-  if(payload.role === Role.ADMIN)
+  if(payload.role === Role.admin)
   return orderExist
 
-  if(payload.role === Role.CUSTOMER && payload.userId !== orderExist?.userId){
-    console.log(httpStatus.FORBIDDEN, 'You are not authorized!');
+  if(payload.role === Role.customer && payload.userId !== orderExist?.userId){
+    throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorized!');
   }
 
   return orderExist
@@ -33,10 +34,10 @@ const findOneOrder = async (id: string, payload: IValidateUser): Promise<Order |
 
 const findOrders = async (payload: IValidateUser): Promise<Order[]> => {
   
-  if(payload.role === Role.ADMIN)
+  if(payload.role === Role.admin)
     return await prismaClient.order.findMany({ })
 
-  else if(payload.role === Role.CUSTOMER)
+  else if(payload.role === Role.customer)
   return await prismaClient.order.findMany({
   where: {
     userId: payload.userId
