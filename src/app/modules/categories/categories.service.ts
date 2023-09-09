@@ -1,14 +1,15 @@
 import httpStatus from "http-status"
 import prismaClient from "../../../shared/prisma-client"
 import {Category} from "@prisma/client";
+import ApiError from "../../error/api-error"
 
 const insertCategory = async (payload: Category): Promise<Category> => {
   const categoryExist = await prismaClient.category.findFirst({
     where: {
-      title: payload.title
+      title: {equals: payload.title}
     }
   })
-  if(categoryExist) console.log(httpStatus.CONFLICT,'Category already exist!')
+  if(categoryExist) throw new ApiError(httpStatus.CONFLICT,'Category already exist!')
   const createdCategory = await prismaClient.category.create({
     data: payload
   })
@@ -26,7 +27,7 @@ const updateCategory = async (id:string, payload: Category): Promise<Category | 
   })
 
   if(!categoryExist)
-  console.log(httpStatus.NOT_FOUND, 'Category not exists')
+  throw new ApiError(httpStatus.NOT_FOUND, 'Category not exists')
 
   const category = await prismaClient.category.update({
     where: {
@@ -47,7 +48,7 @@ const deleteCategory = async (id:string): Promise<Category | null> => {
   })
 
   if(!categoryExist)
-  console.log(httpStatus.NOT_FOUND, 'Category not exists')
+  throw new ApiError(httpStatus.NOT_FOUND, 'Category not exists')
 
   const category = await prismaClient.category.delete({
     where: {
@@ -66,7 +67,7 @@ const findOneCategory = async (id: string): Promise<Category | null> => {
   })
 
   if(!categoryExist)
-  console.log(httpStatus.NOT_FOUND, 'Category not exists')
+  throw new ApiError(httpStatus.NOT_FOUND, 'Category not exists')
 
   return categoryExist
 }
