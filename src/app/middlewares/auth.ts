@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtHelpers } from "../../helpers/jwt-helpers";
 import { IValidateUser } from "../modules/auth/auth.interface"
+import ApiError from "../error/api-error"
+import httpStatus from "http-status"
 
 const auth = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +22,7 @@ const auth = (...roles: string[]) => {
 
       if (roles?.length) {
         if(!user.role || !roles.includes(user.role)){
-          next('Forbidden!')
+          throw new ApiError(httpStatus.FORBIDDEN,'Forbidden!')
         }
       }
 

@@ -4,6 +4,7 @@ import { AuthRouter } from "../app/modules/auth/auth.router"
 import { CategoryRouter } from "../app/modules/categories/categories.router"
 import { BookRouter } from "../app/modules/books/books.router"
 import { OrderRouter } from "../app/modules/orders/orders.router"
+import { ProfileRouter } from "../app/modules/profile/profile.router"
 
 const router = express.Router()
 
@@ -13,6 +14,7 @@ const routes = [
   {path: '/categories', module: CategoryRouter},
   {path: '/books', module: BookRouter},
   {path: '/orders', module: OrderRouter},
+  {path: '/profile', module: ProfileRouter},
 ]
 
 routes.forEach(route=>{

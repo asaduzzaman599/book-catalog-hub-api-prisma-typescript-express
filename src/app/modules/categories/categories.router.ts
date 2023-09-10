@@ -8,7 +8,7 @@ const router = express.Router()
 router.route('/create-category').post(auth(Role.admin), CategoryController.insertCategory)
 
 router.route('/')
-.get(CategoryController.findCategories).post(auth(Role.admin), CategoryController.insertCategory)
+.get(CategoryController.findCategories)
 
 router.route('/:id')
 .get(CategoryController.findOneCategory)

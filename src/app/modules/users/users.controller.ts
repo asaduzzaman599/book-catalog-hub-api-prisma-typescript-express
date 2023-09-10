@@ -2,10 +2,10 @@ import catchAsync from "../../../shared/catchAsync";
 import responseData from "../../../shared/response";
 import { UserService } from "./users.service";
 
-const insertUser = catchAsync((req, res) => {
+const insertUser = catchAsync(async (req, res) => {
   const user = req.body;
 
-  const result = UserService.insertUser(user);
+  const result = await UserService.insertUser(user);
   
   return responseData({ message: "User inserted  successfully", result }, res);
 });
@@ -19,10 +19,10 @@ const updateUser = catchAsync(async (req, res) => {
   return responseData({ message: "User updated  successfully", result }, res);
 });
 
-const deleteUser = catchAsync((req, res) => {
+const deleteUser = catchAsync(async (req, res) => {
   const id = req.params.id;
 
-  const result = UserService.deleteUser(id);
+  const result = await UserService.deleteUser(id);
 
   return responseData({ message: "User deleted  successfully", result }, res);
 });

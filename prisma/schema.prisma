@@ -99,7 +99,7 @@ userId String
 user User @relation(fields: [userId], references: [id])
 
 
-orderedBooks Json
+orderedBooks Json?
 
 createdAt DateTime @default(now())
 updateAt DateTime @updatedAt

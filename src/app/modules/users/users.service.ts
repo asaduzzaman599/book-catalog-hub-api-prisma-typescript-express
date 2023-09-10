@@ -23,14 +23,14 @@ const updateUser = async (id:string, payload: User): Promise<Omit<User,'password
   if(!userExist)
   throw new ApiError(httpStatus.NOT_FOUND, 'User not exists')
 
-  const user = await prismaClient.user.update({
+  const user: Partial<User> = await prismaClient.user.update({
     where: {
       id
     },
     data: payload
   })
-  const {password, ...userData} = user
-  return userData
+ delete user.password
+  return user as Omit<User, 'password'>
 }
  
 const deleteUser = async (id:string): Promise<User | null> => {
@@ -54,7 +54,7 @@ const deleteUser = async (id:string): Promise<User | null> => {
 }
 
 const findOneUser = async (id: string): Promise<Omit<User,'password'> | null> => {
-  const userExist = await prismaClient.user.findUnique({
+  const userExist: Partial<User> | null = await prismaClient.user.findUnique({
     where: {
       id
     }
@@ -63,8 +63,8 @@ const findOneUser = async (id: string): Promise<Omit<User,'password'> | null> =>
   if(!userExist)
   throw new ApiError(httpStatus.NOT_FOUND, 'User not exists')
 
-  const { password, ...userData } = userExist
-  return userData
+  delete userExist.password
+  return userExist as Omit<User, 'password'>
 }
 
 const findUsers = async (): Promise<Partial<User>[]> => {

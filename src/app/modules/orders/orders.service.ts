@@ -1,10 +1,10 @@
 import httpStatus from "http-status"
 import prismaClient from "../../../shared/prisma-client"
-import {Order, Role} from "@prisma/client";
+import {Order, Prisma, Role} from "@prisma/client";
 import { IValidateUser } from "../auth/auth.interface"
 import ApiError from "../../error/api-error"
 
-const insertOrder = async (payload: Order): Promise<Order> => {
+const insertOrder = async (payload: Prisma.OrderCreateInput): Promise<Order> => {
   const createdOrder = await prismaClient.order.create({
     data: payload
   })

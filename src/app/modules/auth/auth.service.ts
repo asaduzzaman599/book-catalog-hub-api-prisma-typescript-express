@@ -4,6 +4,7 @@ import bcrypt from "bcrypt"
 import config from "../../../config"
 import httpStatus from "http-status"
 import { JwtHelpers } from "../../../helpers/jwt-helpers"
+import ApiError from "../../error/api-error"
 
 const signIn = async (payload: {email: string; password: string}) => {
   const userExist = await prismaClient.user.findUnique({where:{
@@ -11,10 +12,10 @@ const signIn = async (payload: {email: string; password: string}) => {
   }})
 
   if(!userExist)
-  console.log(httpStatus.NOT_FOUND, 'User does not exist!');
+  throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist!');
 
   if(userExist?.password && !(await bcrypt.compare(payload.password, userExist?.password)))
-    console.log(httpStatus.BAD_REQUEST, 'Email or Password not matched!');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email or Password not matched!');
 
     const accessToken = JwtHelpers.generateToken({userId: userExist?.id, role: userExist?.role})
 
@@ -29,16 +30,17 @@ const signUp = async (payload: User) => {
     data: payload
   }) 
 
-  if(!createdUser) console.log(httpStatus.EXPECTATION_FAILED, 'User created failed')
+  if(!createdUser) throw new ApiError(httpStatus.EXPECTATION_FAILED, 'User created failed')
 
-  const user = await prismaClient.user.findFirst({
+  const user: Partial<User | null> = await prismaClient.user.findFirst({
     where:{
       id: createdUser.id
     }
   })
-  const { password: pass, ...userData } = user
 
-  return userData
+  delete user?.password
+
+  return user
 }
 
 

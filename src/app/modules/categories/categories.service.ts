@@ -44,6 +44,9 @@ const deleteCategory = async (id:string): Promise<Category | null> => {
   const categoryExist = await prismaClient.category.findUnique({
     where: {
       id
+    },
+    include: {
+      books: true
     }
   })
 
@@ -63,6 +66,9 @@ const findOneCategory = async (id: string): Promise<Category | null> => {
   const categoryExist = await prismaClient.category.findUnique({
     where: {
       id
+    },
+    include: {
+      books: true
     }
   })
 
@@ -74,6 +80,9 @@ const findOneCategory = async (id: string): Promise<Category | null> => {
 
 const findCategories = async (): Promise<Category[]> => {
   const categories = await prismaClient.category.findMany({
+    include: {
+      books: true
+    }
   })
 
   return categories

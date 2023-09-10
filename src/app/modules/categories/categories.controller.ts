@@ -19,10 +19,10 @@ const updateCategory = catchAsync(async (req, res) => {
   return responseData({ message: "Category updated  successfully", result }, res);
 });
 
-const deleteCategory = catchAsync((req, res) => {
+const deleteCategory = catchAsync(async (req, res) => {
   const id = req.params.id;
 
-  const result = CategoryService.deleteCategory(id);
+  const result = await CategoryService.deleteCategory(id);
 
   return responseData({ message: "Category deleted  successfully", result }, res);
 });

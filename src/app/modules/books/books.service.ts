@@ -4,8 +4,8 @@ import paginationHelpers, {
   IPaginationOption,
 } from "../../../helpers/pagination-helpers";
 import prismaClient from "../../../shared/prisma-client";
+import ApiError from "../../error/api-error";
 import { IFilterOption } from "./books.interface";
-import ApiError from "../../error/api-error"
 
 const insertBook = async (payload: Book): Promise<Book> => {
   const createdBook = await prismaClient.book.create({
@@ -67,14 +67,18 @@ const findOneBook = async (id: string): Promise<Book | null> => {
 const findBooks = async (
   filterOptions: IFilterOption,
   paginationOptions: IPaginationOption
-)=> {
-  const { limit, page, skip } = paginationHelpers(paginationOptions);
+) => {
+  const { limit, page, skip, sortBy, sortOrder } =
+    paginationHelpers(paginationOptions);
 
   const andCondition = [];
 
-  if (Object.keys(filterOptions).length) {
+  const { search, ...options } = filterOptions;
+console.log('options',options)
+   if (Object.keys(options).length) {
     andCondition.push({
-      AND: Object.entries(filterOptions).map(([field, value]) => {
+      AND: Object.entries(options).map(([field, value]) => {
+        console.log(field,value)
         if (field === "minPrice") {
           return {
             price: {
@@ -98,42 +102,44 @@ const findBooks = async (
     });
   }
 
-  const { search, ...options } = filterOptions;
 
+  console.log(search);
   if (search)
     andCondition.push({
-      OR: ["title", "author", "genre"].map((i) => ({
-        [i]: {
-          contain: search,
+      OR: ["title", "author", "genre"].map((field) => ({
+        [field]: {
+          contains: search,
           mode: "insensitive",
         },
       })),
     });
 
-  if (Object.keys(options).length > 0) {
-    andCondition.push({
-      AND: Object.entries(options).map(([key, value]) => ({
-        [key]: {
-          equals: value,
-        },
-      })),
-    });
-  }
 
   const whereCondition: Prisma.BookWhereInput =
     andCondition.length > 0 ? { AND: andCondition } : {};
 
-  const conditions = { where: whereCondition, skip, take: limit };
-  const books = await prismaClient.book.findMany(conditions);
+  const books = await prismaClient.book.findMany({
+    where: whereCondition,
+    skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? { [sortBy]: sortOrder }
+        : {
+            createdAt: "desc",
+          },
+  });
 
-  const count = await prismaClient.book.count(conditions);
+  const count = await prismaClient.book.count({
+    where: whereCondition,
+  });
 
   return {
     meta: {
       page,
       size: limit,
       total: count,
-      totalPage: !isNaN(count / limit) ? Math.ceil(count / limit): 0,
+      totalPage: !isNaN(count / limit) ? Math.ceil(count / limit) : 0,
     },
     data: books,
   };

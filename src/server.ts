@@ -1,16 +1,7 @@
 import app from "./app"
 import config from "./config"
-import httpStatus from "http-status"
 
-function main() {
-
-  app.get('/', async (req,res)=>{
-    return res.status(httpStatus.OK).json({
-      success: true,
-      message: `Server running port at ${config.PORT}`
-    })
-    
-  })
+async function main() {
 
 
   app.listen(config.PORT,()=>{
