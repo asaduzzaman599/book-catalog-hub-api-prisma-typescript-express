@@ -47,8 +47,12 @@ const findBooks = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
 }));
 const findBookByCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const categoryId = req.params.categoryId;
-    const result = yield books_service_1.BookService.findBookByCategory(categoryId);
-    return (0, response_1.default)({ message: "Books with associated category data fetched successfully", result }, res);
+    const query = req.query;
+    const paginationOptions = (0, pick_1.default)(query, ['page', 'size', 'sortBy', 'sortOrder']);
+    const filterOptions = (0, pick_1.default)(query, ['search', 'minPrice', 'maxPrice', 'category']);
+    filterOptions.categoryId = categoryId;
+    const result = yield books_service_1.BookService.findBooks(filterOptions, paginationOptions);
+    return (0, response_1.default)({ message: "Books with associated category data fetched successfully", result: { result: result.data, meta: result.meta } }, res);
 }));
 exports.BookController = {
     insertBook,

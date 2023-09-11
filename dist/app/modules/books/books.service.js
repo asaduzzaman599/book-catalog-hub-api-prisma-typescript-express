@@ -76,11 +76,12 @@ const findOneBook = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return bookExist;
 });
 const findBooks = (filterOptions, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
-    const { limit, page, skip } = (0, pagination_helpers_1.default)(paginationOptions);
+    const { limit, page, skip, sortBy, sortOrder } = (0, pagination_helpers_1.default)(paginationOptions);
     const andCondition = [];
-    if (Object.keys(filterOptions).length) {
+    const { search } = filterOptions, options = __rest(filterOptions, ["search"]);
+    if (Object.keys(options).length) {
         andCondition.push({
-            AND: Object.entries(filterOptions).map(([field, value]) => {
+            AND: Object.entries(options).map(([field, value]) => {
                 if (field === "minPrice") {
                     return {
                         price: {
@@ -101,29 +102,29 @@ const findBooks = (filterOptions, paginationOptions) => __awaiter(void 0, void 0
             }),
         });
     }
-    const { search } = filterOptions, options = __rest(filterOptions, ["search"]);
     if (search)
         andCondition.push({
-            OR: ["title", "author", "genre"].map((i) => ({
-                [i]: {
-                    contain: search,
+            OR: ["title", "author", "genre"].map((field) => ({
+                [field]: {
+                    contains: search,
                     mode: "insensitive",
                 },
             })),
         });
-    if (Object.keys(options).length > 0) {
-        andCondition.push({
-            AND: Object.entries(options).map(([key, value]) => ({
-                [key]: {
-                    equals: value,
-                },
-            })),
-        });
-    }
     const whereCondition = andCondition.length > 0 ? { AND: andCondition } : {};
-    const conditions = { where: whereCondition, skip, take: limit };
-    const books = yield prisma_client_1.default.book.findMany(conditions);
-    const count = yield prisma_client_1.default.book.count(conditions);
+    const books = yield prisma_client_1.default.book.findMany({
+        where: whereCondition,
+        skip,
+        take: limit,
+        orderBy: sortBy && sortOrder
+            ? { [sortBy]: sortOrder }
+            : {
+                createdAt: "desc",
+            },
+    });
+    const count = yield prisma_client_1.default.book.count({
+        where: whereCondition,
+    });
     return {
         meta: {
             page,

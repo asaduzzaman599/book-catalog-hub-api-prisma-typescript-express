@@ -74,11 +74,9 @@ const findBooks = async (
   const andCondition = [];
 
   const { search, ...options } = filterOptions;
-console.log('options',options)
    if (Object.keys(options).length) {
     andCondition.push({
       AND: Object.entries(options).map(([field, value]) => {
-        console.log(field,value)
         if (field === "minPrice") {
           return {
             price: {
@@ -103,7 +101,6 @@ console.log('options',options)
   }
 
 
-  console.log(search);
   if (search)
     andCondition.push({
       OR: ["title", "author", "genre"].map((field) => ({
